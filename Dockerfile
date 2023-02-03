@@ -10,5 +10,9 @@ COPY . .
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 VOLUME /Netz
+VOLUME /roi
+
 
 CMD [ "python3", "update_dataset.py"]
+
+# docker run --name container_name -v '/home/raisul/roi':'/roi' docker_image_name
