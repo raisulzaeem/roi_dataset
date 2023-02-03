@@ -139,7 +139,7 @@ def mediagate_id_to_image_path(mediagate_id):
         image_path = '//devarcsv041/orderdata/repro_files/' + image_path
 
     if os.name == 'posix':
-        image_path_raw.replace('//devarcsv041','/Netz/devarcsv041')
+        image_path = image_path.replace('//devarcsv041','/Netz/devarcsv041')
 
     return image_path
 
