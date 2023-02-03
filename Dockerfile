@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt update; apt install -y libgl1
 RUN apt-get install -y libglib2.0-0
 
-COPY . .
+COPY requirements.txt app/requirements.txt
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
@@ -16,4 +16,4 @@ RUN chmod a+x docker_entrypoint.sh
 
 ENTRYPOINT [ "./docker_entrypoint.sh" ]
 
-# docker run --name container_name -v '/home/raisul/roi':'/roi' -v '/Netz':'/Netz' docker_image_name
+# docker run --name container_name -v '/home/raisul/roi':'/roi' -v '/Netz':'/Netz' -v '/home/raisul/roi/roi_dataset':'/app' docker_image_name
