@@ -12,7 +12,8 @@ RUN pip3 install -r requirements.txt
 VOLUME /Netz
 VOLUME /roi
 
+RUN chmod a+x docker_entrypoint.sh
 
-CMD [ "python3", "update_dataset.py"]
+ENTRYPOINT [ "./docker_entrypoint.sh" ]
 
 # docker run --name container_name -v '/home/raisul/roi':'/roi' -v '/Netz':'/Netz' docker_image_name
