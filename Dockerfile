@@ -15,4 +15,4 @@ VOLUME /roi
 
 CMD [ "python3", "update_dataset.py"]
 
-# docker run --name container_name -v '/home/raisul/roi':'/roi' docker_image_name
+# docker run --name container_name -v '/home/raisul/roi':'/roi' -v '/Netz':'/Netz' docker_image_name
