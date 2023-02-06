@@ -199,7 +199,7 @@ if __name__ == "__main__":
             print("Error!", e.__class__, "occurred.")
             error_count+=1
         
-        if error_count>1000:
+        if error_count>100:
             break
     
     os.system("python fetch_images.py")
