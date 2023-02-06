@@ -8,7 +8,7 @@ from tqdm import tqdm
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description="Arguments to prepare the dataset")
-    parser.add_argument('-i','--image_dir', default="C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\latest_roi_repro", required=False)
+    parser.add_argument('-i','--image_dir', default="/roi/latest_roi_repro", required=False)
 
 
     args = parser.parse_args()
