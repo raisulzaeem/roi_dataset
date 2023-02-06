@@ -2,6 +2,7 @@ import cv2 as cv
 import json
 import os
 import numpy as np
+from tqdm import tqdm
 
 image_dir = "/roi/latest_roi_repro" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\latest_roi_repro"
 gaussian_dir = "/roi/latest_roi_repro_gaussian_2048" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\gaussian_2048"
@@ -51,8 +52,10 @@ if __name__ == "__main__":
 
     if not os.path.exists(gaussian_dir):
         os.makedirs(gaussian_dir)
+    
 
-    for image_path, roi_mm in images_and_roi_mm.items():
+
+    for image_path, roi_mm in tqdm(images_and_roi_mm.items()):
         local_image_path = os.path.join(image_dir, os.path.basename(image_path))
         if not os.path.exists(local_image_path):
             continue

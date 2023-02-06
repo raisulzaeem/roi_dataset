@@ -22,9 +22,8 @@ if __name__=="__main__":
     with open(f'images_and_roi{roi_count}.json') as f:
         images_and_annotation = json.load(f)
 
-    pbar = tqdm(total=len(images_and_annotation.keys()))
 
-    for source_image_path in images_and_annotation.keys():
+    for source_image_path in tqdm(images_and_annotation.keys()):
         dest_image_path = os.path.join(image_dir,os.path.basename(source_image_path))
         if not os.path.exists(dest_image_path):
             if not os.path.exists(source_image_path):
@@ -36,8 +35,9 @@ if __name__=="__main__":
                     continue
             
             shutil.copy(source_image_path, dest_image_path)
-        pbar.update()
         # print(count)
+
+    os.system("python create_gaussian_dataset.py")  
 
     print("!")
 
