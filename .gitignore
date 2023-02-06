@@ -128,4 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/images_roi_percent_latest.json
+images_roi_percent_latest.json
+images_and_roi*
