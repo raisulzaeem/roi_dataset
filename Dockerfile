@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt update; apt install -y libgl1
 RUN apt-get install -y libglib2.0-0
 
-COPY ./requirements.txt app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
