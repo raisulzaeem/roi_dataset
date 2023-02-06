@@ -5,15 +5,12 @@ WORKDIR /app
 RUN apt update; apt install -y libgl1
 RUN apt-get install -y libglib2.0-0
 
-COPY requirements.txt app/requirements.txt
+COPY ./requirements.txt app/requirements.txt
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 VOLUME /Netz
 VOLUME /roi
 
-RUN chmod a+x docker_entrypoint.sh
-
-ENTRYPOINT [ "./docker_entrypoint.sh" ]
-
+CMD [ "python3", "update_dataset.py"]
 # docker run --name container_name -v '/home/raisul/roi':'/roi' -v '/Netz':'/Netz' -v '/home/raisul/roi/roi_dataset':'/app' docker_image_name

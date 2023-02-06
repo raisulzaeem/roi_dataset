@@ -201,4 +201,6 @@ if __name__ == "__main__":
         
         if error_count>1000:
             break
+    
+    os.system("python fetch_images.py")
 
