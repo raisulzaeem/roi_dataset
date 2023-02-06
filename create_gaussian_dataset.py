@@ -22,9 +22,9 @@ def resize_image(image_path, output_dir, dimension=(2048,2048)):
     try:
         if os.path.exists(os.path.join(output_dir, image_path)):
             return True
-        image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        reduced_image = cv2.resize(image, dimension)
-        cv2.imwrite(os.path.join(output_dir, os.path.basename(image_path)),reduced_image)
+        image = cv.imread(image_path, cv.IMREAD_COLOR)
+        reduced_image = cv.resize(image, dimension)
+        cv.imwrite(os.path.join(output_dir, os.path.basename(image_path)),reduced_image)
         return True
     except Exception as e:
         print(e.__class__)
