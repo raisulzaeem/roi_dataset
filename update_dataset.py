@@ -55,8 +55,8 @@ def get_encoway_wh(mediagate_id):
 
 def get_roi(xml_path): # in mm
     point_per_inch = 72
-    ich_to_mm = 25.4
-    point_to_mm = ich_to_mm/point_per_inch
+    inch_to_mm = 25.4
+    point_to_mm = inch_to_mm/point_per_inch
     if not os.path.exists(xml_path):
         return 0,0,0,0
     tree = ET.parse(xml_path)
