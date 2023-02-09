@@ -169,15 +169,23 @@ def roi_annotation(mediagate_id):
 
 if __name__ == "__main__":
 
-    with open('last_scan.json') as f:
-        last_scan = json.load(f)
-    
-    mediagate_id = last_scan['last_mediagate_id'] # start mediagate id {"last_mediagate_id": 1268138, "roi_count": 10100}
-    roi_count = last_scan['roi_count']
+    if os.path.exists('last_scan.json'):
+        with open('last_scan.json') as f:
+            last_scan = json.load(f)    
+        mediagate_id = last_scan['last_mediagate_id'] # start mediagate id {"last_mediagate_id": 1268138, "roi_count": 10100}
+        roi_count = last_scan['roi_count']
+    else:
+        mediagate_id = 1218610 # First mediagate id from 15.08.2022
+        roi_count = 0
+
+
     error_count = 0
 
-    with open(f'images_and_roi{roi_count}.json') as f:
-        images_and_annotation = json.load(f)
+    if os.path.exists(f'images_and_roi{roi_count}.json'):
+        with open(f'images_and_roi{roi_count}.json') as f:
+            images_and_annotation = json.load(f)
+    else:
+        images_and_annotation = {}
 
     while True:
         mediagate_id += 1
