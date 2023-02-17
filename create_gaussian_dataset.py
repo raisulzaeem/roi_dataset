@@ -5,8 +5,9 @@ import numpy as np
 from tqdm import tqdm
 
 image_dir = "/roi/latest_roi_repro" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\latest_roi_repro"
-image_dir_2048 = "/roi/latest_roi_repro_2048"
-gaussian_dir = "/roi/latest_roi_repro_gaussian_2048" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\gaussian_2048"
+dimension = 512
+image_dir_dim = f"/roi/latest_roi_repro_{dimension}"
+gaussian_dir = f"/roi/latest_roi_repro_gaussian_{dimension}" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\gaussian_2048"
 
 
 point_per_inch = 300
@@ -31,7 +32,7 @@ def resize_image(image_path, output_dir, dimension=(2048,2048)):
         return False
 
 
-def create_gaussian_image(image_path, xywh, output_dir, dimension=512):
+def create_gaussian_image(image_path, xywh, output_dir, dimension=2048):
     x,y,w,h = [int(i*dimension) for i in xywh]
     black = np.zeros((dimension, dimension), dtype= np.uint8)
     if (x+w>=(dimension-1)):
@@ -65,8 +66,10 @@ if __name__ == "__main__":
 
     if not os.path.exists(gaussian_dir):
         os.makedirs(gaussian_dir)
-    
 
+    if not os.path.exists(image_dir_dim):
+        os.makedirs(image_dir_dim)
+    
 
     for image_path, roi_mm in tqdm(images_and_roi_mm.items()):
         local_image_path = os.path.join(image_dir, os.path.basename(image_path))
@@ -79,7 +82,13 @@ if __name__ == "__main__":
             image_height, image_width, _ = image.shape
             roi_pixel = [roi*mm_to_pixel for roi in roi_mm]
             roi_in_percent = [roi_pixel[0]/image_width, roi_pixel[1]/image_height, roi_pixel[2]/image_width, roi_pixel[3]/image_height]
+<<<<<<< HEAD
             if not resize_image(local_image_path, image_dir_2048):
+=======
+            create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension=dimension)
+
+            if not resize_image(local_image_path, image_dir_dim, dimension=dimension):
+>>>>>>> 814a04ff0761d4013b33533412b1e7ec19dfaf0d
                 continue
             create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension=2048)
 
