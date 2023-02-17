@@ -19,7 +19,7 @@ mm_to_pixel = point_per_inch/ inch_to_mm
 #     images_and_roi = json.load(f) # in mm
 
 
-def resize_image(image_path, output_dir, dimension=(2048,2048)):
+def resize_and_write_image(image_path, output_dir, dimension=(2048,2048)):
     try:
         if os.path.exists(os.path.join(output_dir, image_path)):
             return True
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             image_height, image_width, _ = image.shape
             roi_pixel = [roi*mm_to_pixel for roi in roi_mm]
             roi_in_percent = [roi_pixel[0]/image_width, roi_pixel[1]/image_height, roi_pixel[2]/image_width, roi_pixel[3]/image_height]
-            if not resize_image(local_image_path, image_dir_2048):
+            if not resize_and_write_image(local_image_path, image_dir_2048):
                 continue
             create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension=2048)
 
