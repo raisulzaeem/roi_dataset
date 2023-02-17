@@ -5,7 +5,7 @@ import numpy as np
 from tqdm import tqdm
 
 image_dir = "/roi/latest_roi_repro" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\latest_roi_repro"
-dimension = 512
+dimension = 2048
 image_dir_dim = f"/roi/latest_roi_repro_{dimension}"
 gaussian_dir = f"/roi/latest_roi_repro_gaussian_{dimension}" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\gaussian_2048"
 
@@ -19,13 +19,14 @@ mm_to_pixel = point_per_inch/ inch_to_mm
 #     images_and_roi = json.load(f) # in mm
 
 
-def resize_and_write_image(image_path, output_dir, dimension=(2048,2048)):
+def resize_and_write_image(image_path, output_dir, dimension=2048):
+    dest_path = os.path.join(output_dir, os.path.basename(image_path))
     try:
-        if os.path.exists(os.path.join(output_dir, image_path)):
+        if os.path.exists(dest_path):
             return True
         image = cv.imread(image_path, cv.IMREAD_COLOR)
-        reduced_image = cv.resize(image, dimension)
-        cv.imwrite(os.path.join(output_dir, os.path.basename(image_path)),reduced_image)
+        reduced_image = cv.resize(image, (dimension,dimension))
+        cv.imwrite(dest_path,reduced_image)
         return True
     except Exception as e:
         print(e.__class__)
@@ -82,9 +83,9 @@ if __name__ == "__main__":
             image_height, image_width, _ = image.shape
             roi_pixel = [roi*mm_to_pixel for roi in roi_mm]
             roi_in_percent = [roi_pixel[0]/image_width, roi_pixel[1]/image_height, roi_pixel[2]/image_width, roi_pixel[3]/image_height]
-            if not resize_and_write_image(local_image_path, image_dir_2048):
+            if not resize_and_write_image(local_image_path, image_dir_dim, dimension):
                 continue
-            create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension=2048)
+            create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension)
 
             local_images_roi_percentage_dict.update({local_image_path:roi_in_percent})
         except Exception as e:
