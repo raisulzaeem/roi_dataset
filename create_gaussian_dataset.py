@@ -82,13 +82,7 @@ if __name__ == "__main__":
             image_height, image_width, _ = image.shape
             roi_pixel = [roi*mm_to_pixel for roi in roi_mm]
             roi_in_percent = [roi_pixel[0]/image_width, roi_pixel[1]/image_height, roi_pixel[2]/image_width, roi_pixel[3]/image_height]
-<<<<<<< HEAD
             if not resize_image(local_image_path, image_dir_2048):
-=======
-            create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension=dimension)
-
-            if not resize_image(local_image_path, image_dir_dim, dimension=dimension):
->>>>>>> 814a04ff0761d4013b33533412b1e7ec19dfaf0d
                 continue
             create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension=2048)
 
