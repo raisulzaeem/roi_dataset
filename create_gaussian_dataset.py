@@ -77,19 +77,24 @@ if __name__ == "__main__":
         if not os.path.exists(local_image_path):
             continue
         if local_image_path in local_images_roi_percentage_dict_keys:
-            continue
+            if (os.path.exists(os.path.join(image_dir_dim, os.path.basename(local_image_path))) and os.path.exists(os.path.join(gaussian_dir, os.path.basename(local_image_path)))):
+                continue
         try:
             image = cv.imread(local_image_path,-1)
             image_height, image_width, _ = image.shape
             roi_pixel = [roi*mm_to_pixel for roi in roi_mm]
             roi_in_percent = [roi_pixel[0]/image_width, roi_pixel[1]/image_height, roi_pixel[2]/image_width, roi_pixel[3]/image_height]
             if not resize_and_write_image(local_image_path, image_dir_dim, dimension):
+                if local_image_path in local_images_roi_percentage_dict:
+                    local_images_roi_percentage_dict.pop(local_image_path, None)
                 continue
             create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension)
 
             local_images_roi_percentage_dict.update({local_image_path:roi_in_percent})
         except Exception as e:
             print("Error : ",e.__class__)
+            if local_image_path in local_images_roi_percentage_dict:
+                local_images_roi_percentage_dict.pop(local_image_path, None)
 
         with open("images_roi_percent_latest.json",'w') as f:
             json.dump(local_images_roi_percentage_dict,f)
