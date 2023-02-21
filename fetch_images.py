@@ -14,6 +14,9 @@ if __name__=="__main__":
     args = parser.parse_args()
     image_dir = args.image_dir
 
+    if not os.path.exists(image_dir):
+        os.makedirs(image_dir)
+
     with open('last_scan.json') as f:
         last_scan = json.load(f)
 
