@@ -4,8 +4,8 @@ import os
 import numpy as np
 from tqdm import tqdm
 
-image_dir = "/roi/latest_roi_repro" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\latest_roi_repro"
-gaussian_dir = "/roi/latest_roi_repro_gaussian_2048" #"C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\gaussian_2048"
+image_dir = "C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\latest_roi_repro" #"/roi/latest_roi_repro" #
+gaussian_dir = "C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\images\\gaussian_2048" #"/roi/latest_roi_repro_gaussian_2048" #
 
 
 point_per_inch = 300
@@ -66,6 +66,8 @@ if __name__ == "__main__":
             image_height, image_width, _ = image.shape
             roi_pixel = [roi*mm_to_pixel for roi in roi_mm]
             roi_in_percent = [roi_pixel[0]/image_width, roi_pixel[1]/image_height, roi_pixel[2]/image_width, roi_pixel[3]/image_height]
+            if ((roi_in_percent[2]==0) or (roi_in_percent[3]==0)):
+                continue 
             create_gaussian_image(local_image_path,roi_in_percent, gaussian_dir, dimension=2048)
             local_images_roi_percentage_dict.update({local_image_path:roi_in_percent})
         except Exception as e:
