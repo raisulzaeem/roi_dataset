@@ -285,7 +285,9 @@ if __name__ == "__main__":
 
         if idx%10==0:
             df.to_excel("dataset_neu.xlsx")
-            
+    
+    print('Finished. Press any key to continue...')
+    x = input()
 
 
 
