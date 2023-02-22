@@ -5,6 +5,7 @@ import os
 import numpy as np
 import pandas as pd
 import requests
+from tqdm import tqdm
 import xml.etree.ElementTree as ET
 
 def csv_to_list(csv_path):
@@ -39,16 +40,21 @@ def mediagate_2_image_path(mediagate_id, server_path):
     else:
         image_path = os.path.join(server_path, "repro_files", *response_dict["IMAGE_PATH"].split('/'))
     
-    image_path = image_path.replace('.jpg','.jpeg')
+    if image_path.endswith('.jpg'):
+        if not os.path.exists(image_path):
+            image_path = image_path.replace('.jpg','_RAW.jpeg')
+    elif image_path.endswith('.jpeg'):
+        if not os.path.exists(image_path):
+            image_path = image_path.replace('.jpg','_RAW.jpeg')
     
-    if os.path.exists(image_path):
-        return image_path
-    else:
-        image_path_1 = image_path.replace('.jpeg','_1.jpeg')
-        if os.path.exists(image_path_1):
-            return image_path_1
+    if not os.path.exists(image_path):
+        image_path = image_path.replace('.jpeg','_1.jpeg')
+    
+    if not os.path.exists(image_path):
         print(f"Couldn't find {image_path}")
-        return None  
+        image_path = None
+
+    return image_path  
 
 
 def get_xml_path(image_path):
@@ -216,36 +222,38 @@ def get_cropped_order_image(image, roi):
 
 
 if __name__ == "__main__":
-    prio_1_csv = "C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\prio_1.csv" # daily data
-    daily2order_xlsx = "C:\\Users\\rislam\\Documents\\Python Scripts\\ROI\\tagesdaten.xlsx"
-    clip_data_path = "M:\\dockerdata\\clipData\\image_embeddings\\"
-    server_path = "\\\\devarcsv041\\orderdata"
+    prio_1_csv = "/roi/prio_1.csv" # daily data
+    daily2order_xlsx = "/roi/tagesdaten.xlsx"
+    clip_data_path = "/image_embeddings/"
+    server_path = "/Netz/devarcsv041/orderdata"
 
     prio_1_list = [id for ids in csv_to_list(prio_1_csv) for id in ids]
     
-    #daily2order_all =  get_daily2order_dict(daily2order_xlsx)
-
-    
-    with open("daily2order_prio1_all.json") as f:
-        daily2order_all = json.load(f)
+    if os.path.exists("daily2order_prio1_all.json"):
+        with open("daily2order_prio1_all.json") as f:
+            daily2order_all = json.load(f)
+    else:
+        daily2order_all =  get_daily2order_dict(daily2order_xlsx)
+        with open("daily2order_prio1_all.json",'w') as f:
+            json.dump(daily2order_all, f)
 
     daily2order_p1_all = {daily:orders for daily, orders in daily2order_all.items() if str(daily) in prio_1_list}
 
 
-    with open("daily2order_prio1_best_matching_embedding_0.9.json") as f:
-        daily2order_p1 = json.load(f)
-    
-    daily2order_p1 = {v:k for k,v in daily2order_p1.items()} ## Did a mistake, reverse
-
-    #daily2order_p1 = get_best_daily2order(daily2order_p1_all)
-
+    if os.path.exists("daily2order_prio1_best_matching_embedding_0.9.json"):
+        with open("daily2order_prio1_best_matching_embedding_0.9.json") as f:
+            daily2order_p1 = json.load(f)
+    else:
+        daily2order_p1 = get_best_daily2order(daily2order_p1_all, clip_data_path)
+        with open("daily2order_prio1_best_matching_embedding_0.9.json",'w') as f:
+            json.dump(daily2order_p1, f)
 
 
     df = pd.DataFrame(columns=["order_id", "order_filename", "daily_id", "daily_filename", "order_xywh", "daily_xywh","order_image.shape","daily_image.shape"])
     idx = 1
 
 
-    for daily_id, order_id in daily2order_p1.items():
+    for daily_id, order_id in tqdm(daily2order_p1.items()):
         try:
             order_image_path = mediagate_2_image_path(order_id, server_path)
             order_image = cv.imread(order_image_path, cv.IMREAD_COLOR)
