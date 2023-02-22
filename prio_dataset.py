@@ -41,53 +41,38 @@ def mediagate_2_image_path(mediagate_id, server_path):
         image_path = os.path.join(server_path, "repro_files", *response_dict["IMAGE_PATH"].split('/'))
     
     if image_path.endswith('.jpg'):
-        if not os.path.exists(image_path):
-            image_path = image_path.replace('.jpg','_RAW.jpeg')
-    elif image_path.endswith('.jpeg'):
-        if not os.path.exists(image_path):
-            image_path = image_path.replace('.jpg','_RAW.jpeg')
-    
+        image_path = image_path.replace('.jpg','.jpeg')
+
     if not os.path.exists(image_path):
-        image_path = image_path.replace('.jpeg','_1.jpeg')
-    
-    if not os.path.exists(image_path):
-        print(f"Couldn't find {image_path}")
-        image_path = None
+        if os.path.exists(image_path.replace('.jpeg','_1.jpeg')):
+            image_path = image_path.replace('.jpeg','_1.jpeg')
+        elif os.path.exists(image_path.replace('.jpeg','_RAW.jpeg')):
+            image_path = image_path.replace('.jpeg','_RAW.jpeg')
+        elif os.path.exists(image_path.replace('.jpeg','_RAW_1.jpeg')):
+            image_path = image_path.replace('.jpeg','_RAW_1.jpeg')
+
+        else:
+            print(f"Couldn't find {image_path}")
+            image_path = None
 
     return image_path  
 
 
 def get_xml_path(image_path):
-    """Filenames under the json_file["IMAGE_PATH"] is not always correct.
-    This method deals with this issue. The possible deviations are:
-    
-    Möglichkeit_1:  
-    json_file["IMAGE_PATH"] = xyz.jpg
-    Im Ornder = xyz.jpeg, xyz.xml
 
-    Möglichkeit_2:
-    json_file["IMAGE_PATH"] = xyz.jpg
-    Im Ornder = xyz_1.jpeg, xyz.xml, xyz_2.jpeg
-    
-    Möglichkeit_3: 
-    json_file["IMAGE_PATH"] = xyz.a.jpg
-    Im Ornder = xyz_a.jpeg, xyz_a.xml, ....        
-
-    Möglichkeit_4: 
-    json_file["IMAGE_PATH"] = xyz.a.jpg
-    Im Ornder = xyz_a_1.jpeg, xyz_a_2.jpeg, xyz_a.xml, ...."""
-
-    xml_path = "Life is too short to take stress"
-    if image_path.endswith('_1.jpeg'):
+    if image_path.endswith('_RAW_1.jpeg'):
+        xml_path = image_path.replace('_RAW_1.jpeg','.xml')
+    elif image_path.endswith('_RAW.jpeg'):
+        xml_path = image_path.replace('_RAW.jpeg','.xml')
+    elif image_path.endswith('_1.jpeg'):
         xml_path = image_path.replace('_1.jpeg','.xml')
-    elif image_path.endswith('.jpeg'):
+    else:
         xml_path = image_path.replace('.jpeg','.xml')
-    if not os.path.exists(xml_path):
-        xml_path = '_'.join(image_path.split('.')[:-1])+'.xml'
+
     if not os.path.exists(xml_path):
         print('--------------------------\n',xml_path, " doesn't exist \n")
-        print("Life is boring, take some stress. \n\nBy the way, No xml file found\n")
         xml_path = None
+
     return xml_path
 
 
@@ -256,6 +241,8 @@ if __name__ == "__main__":
     for daily_id, order_id in tqdm(daily2order_p1.items()):
         try:
             order_image_path = mediagate_2_image_path(order_id, server_path)
+            if order_image_path is None:
+                continue
             order_image = cv.imread(order_image_path, cv.IMREAD_COLOR)
             xml_path = get_xml_path(order_image_path)
             order_roi = get_roi(xml_path)
@@ -264,6 +251,8 @@ if __name__ == "__main__":
             height, width, c = cropped_image.shape
 
             daily_image_path = mediagate_2_image_path(daily_id, server_path)
+            if daily_image_path is None:
+                continue
             daily_image = cv.imread(daily_image_path, cv.IMREAD_COLOR)
             dh,dw,dc = daily_image.shape
 
